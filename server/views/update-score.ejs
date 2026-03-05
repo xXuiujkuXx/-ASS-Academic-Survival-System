@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>แก้ไขคะแนน</title>
+    <link rel="stylesheet" href="/css/reg-student-style.css">
+</head>
+<script>
+    function openEditModal(id,subject,section,score,midscore,finalscore) {
+    document.getElementById('student_code').value = id;
+    document.getElementById('subject_code').value = subject;
+    document.getElementById('section').value = section;
+    document.getElementById('score').value = score;
+    document.getElementById('midscore').value = midscore;
+    document.getElementById('finalscore').value = finalscore;
+
+    document.getElementById('editForm').action = "/update-score/" + id;
+
+    document.getElementById('editOverlay').style.display = "block";
+    }
+
+    function closeEdit() {
+    document.getElementById('editOverlay').style.display = "none";
+    }
+</script>
+<div class="overlay" id="editOverlay" style="display:none;">
+  <div class="box">
+    <button class="close-btn" onclick="closeEdit()">✕</button>
+    <h2>แก้ไขคะแนนนักเรียน</h2>
+
+    <form id="editForm" method="POST">
+        <input type="hidden" name="student_code" id="student_code">
+        <input type="hidden" name="subject_code" id="subject_code">
+        <input type="hidden" name="section" id="section">
+        <label>คะแนนเก็บ</label>
+        <input type="number" name="score" id="score">
+        <label>คะแนนสอบกลางภาค</label>
+        <input type="number" name="midscore" id="midscore">
+        <label>คะแนนสอบปลายภาค</label>
+        <input type="number" name="finalscore" id="finalscore">
+      <button type="submit">บันทึก</button>
+    </form>
+  </div>
+</div>
+<body>
+    <%- include("navbar-teacher") %>
+    <div class="con">
+        <h1 class="title">คะแนนเก็บวิชา </h1>
+        <div class="score-con">
+            <table class="score-table">
+                <thead>
+                    <tr>
+                        <th>ชื่อนักเรียน</th>
+                        <th>คะแนนเก็บ</th>
+                        <th>คะแนนสอบกลางภาค</th>
+                        <th>คะแนนสอบปลายภาค</th>
+                        <th>คะแนนรวม</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                <% data.forEach(item => { %>
+                    <% const totalScore = (item.student_final_score || 0) +(item.student_assignment_score || 0) +(item.student_midterm_score || 0); %>
+                    <tr>
+                        <td><%= item.student_code %> </td>
+                        <td><%= item.student_assignment_score %></td>
+                        <td><%= item.student_midterm_score %></td>
+                        <td><%= item.student_final_score %></td>
+                        <td><%= totalScore %></td>
+                        <td><button onclick="openEditModal(
+                            '<%= item.student_code %>',
+                            '<%= item.subject_code %>',
+                            '<%= item.section %>',
+                            '<%= item.student_assignment_score %>',
+                            '<%= item.student_midterm_score %>',
+                            '<%= item.student_final_score %>'
+                        )">แก้ไขคะแนน</button></td>
+                    </tr>
+                <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/add-stu.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+<script>
+    function openOverlay() {
+        document.getElementById("passwordOverlay").style.display = "flex";
+    }
+
+    function closeOverlay() {
+        document.getElementById("passwordOverlay").style.display = "none";
+    }
+
+    function closeIfOutside(event) {
+        if (event.target.classList.contains("overlay")) {
+            closeOverlay();
+        }
+    }
+
+    function openEditSubject(id, code, name, dep, room, year, hours) {
+
+        document.getElementById('edit_subject_id').value = id;
+        document.getElementById('edit_subject_code').value = code;
+        document.getElementById('edit_subject_name').value = name;
+        document.getElementById('edit_year').value = year;
+        document.getElementById('edit_hours').value = hours;
+
+        document.getElementById('editSubjectForm').action = "/edit-subject/" + id;
+
+        document.getElementById('editSubjectOverlay').style.display = "block";
+    }
+
+    function closeEditSubject() {
+        document.getElementById('editSubjectOverlay').style.display = "none";
+    }
+
+    let sectionIndex = 0;
+
+function openSectionModal(subjectId) {
+
+    document.getElementById("sectionForm").action =
+        "/save-section/" + subjectId;
+
+    document.getElementById("sectionContainer").innerHTML = "";
+    sectionIndex = 0;
+
+    fetch("/get-section/" + subjectId)
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.length === 0) {
+                addSectionRow(); // ถ้าไม่มี section ให้มี 1 แถว
+            } else {
+                data.forEach(sec => {
+                    addSectionRow(sec);
+                });
+            }
+
+            document.getElementById("sectionOverlay").style.display = "flex";
+        });
+}
+
+function closeSectionModal() {
+    document.getElementById("sectionOverlay").style.display = "none";
+}
+
+function addSectionRow(sec = null) {
+
+    const container = document.getElementById("sectionContainer");
+
+    const row = document.createElement("div");
+    row.style.border = "1px solid #ccc";
+    row.style.padding = "10px";
+    row.style.marginBottom = "10px";
+
+    const startTime = sec?.start_time ? sec.start_time.substring(0,5) : "";
+    const endTime = sec?.end_time ? sec.end_time.substring(0,5) : "";
+
+    row.innerHTML = `
+        <label>Section</label>
+        <input type="number" name="sections[${sectionIndex}][section]"
+               value="${sec?.section || sectionIndex+1}" required>
+
+        <br>
+
+        <label>วัน</label>
+        <select name="sections[${sectionIndex}][day_of_week]" required>
+            <option value="">--เลือก--</option>
+            <option value="Mon" ${sec?.day_of_week==="Mon"?"selected":""}>Mon</option>
+            <option value="Tue" ${sec?.day_of_week==="Tue"?"selected":""}>Tue</option>
+            <option value="Wed" ${sec?.day_of_week==="Wed"?"selected":""}>Wed</option>
+            <option value="Thu" ${sec?.day_of_week==="Thu"?"selected":""}>Thu</option>
+            <option value="Fri" ${sec?.day_of_week==="Fri"?"selected":""}>Fri</option>
+        </select>
+
+        <br>
+
+        <label>เริ่ม</label>
+        <input type="time" name="sections[${sectionIndex}][start_time]"
+               value="${startTime}" required>
+
+        <label>สิ้นสุด</label>
+        <input type="time" name="sections[${sectionIndex}][end_time]"
+               value="${endTime}" required>
+
+        <button type="button" onclick="this.parentElement.remove()"
+                style="margin-left:10px;">ลบ</button>
+    `;
+
+    container.appendChild(row);
+    sectionIndex++;
+}
+</script>
+<div class="overlay" id="sectionOverlay" style="display:none;">
+  <div class="box" style="width:500px; background:white; padding:20px;">
+
+    <button onclick="closeSectionModal()" style="float:right;">✕</button>
+    <h3>จัดการ Section</h3>
+
+    <form id="sectionForm" method="POST">
+
+      <div id="sectionContainer">
+        <!-- section rows จะถูก generate ด้วย JS -->
+      </div>
+
+      <br>
+      <button type="button" onclick="addSectionRow()">+ เพิ่ม Section</button>
+      <br><br>
+
+      <button type="submit">บันทึก</button>
+
+    </form>
+  </div>
+</div>
+
+<div class="overlay" id="passwordOverlay" onclick="closeIfOutside(event)">
+    <div class="box">
+        <button class="close-btn" onclick="closeOverlay()">✕</button>
+        <h2>Change Password</h2>
+        <form action="/add-subject/<%= user.account_id %>" method="POST">
+
+            <label>รหัสวิชา</label>
+            <input type="text" name="subject_code" required>
+
+            <label>ชื่อวิชา</label>
+            <input type="text" name="subject_name" required>
+
+            <label>ภาควิชา</label>
+            <select name="department_id" required>
+                <% departments.forEach(dep=> { %>
+                    <option value="<%= dep.department_id %>">
+                        <%= dep.department_name %>
+                    </option>
+                    <% }) %>
+            </select>
+
+            <label>ห้องเรียน</label>
+            <select name="classroom_id" required>
+                <% classrooms.forEach(room=> { %>
+                    <option value="<%= room.classroom_id %>">
+                        <%= room.classroom_name %>
+                    </option>
+                    <% }) %>
+            </select>
+
+            <label>ปีการศึกษา</label>
+            <input type="number" name="year" required>
+
+        
+            <label>คุณครูผู้สอน</label>
+            <select name="teacher_id" required>
+                <% teachers.forEach(t=> { %>
+                    <option value="<%= t.teacher_id %>">
+                        <%= t.PersonalDatum.first_name %>
+                            <%= t.PersonalDatum.last_name %>
+                    </option>
+                    <% }) %>
+            </select>
+
+            <br><br>
+            <button type="submit">เพิ่มวิชา</button>
+
+        </form>
+    </div>
+</div>
+
+<div class="overlay" id="editSubjectOverlay" style="display:none;">
+  <div class="box">
+    <button class="close-btn" onclick="closeEditSubject()">✕</button>
+    <h2>แก้ไขข้อมูลวิชา</h2>
+
+    <form id="editSubjectForm" method="POST">
+
+      <input type="hidden" name="subject_id" id="edit_subject_id">
+
+      <label>รหัสวิชา</label>
+      <input type="text" name="subject_code" id="edit_subject_code">
+
+      <label>ชื่อวิชา</label>
+      <input type="text" name="subject_name" id="edit_subject_name">
+
+      <label>ปี</label>
+      <input type="number" name="year" id="edit_year">
+
+      <label>ชั่วโมง</label>
+      <input type="number" name="hours" id="edit_hours">
+
+      <button type="submit">บันทึก</button>
+
+    </form>
+  </div>
+</div>
+
+<body>
+    <%- include("navbar-staff") %>
+
+        <h3>รายการวิชาทั้งหมด</h3>
+        <div class="score-con">
+            <table >
+            <tr>
+                <th>รหัสวิชา</th>
+                <th>ชื่อวิชา</th>
+                <th>ภาควิชา</th>
+                <th>ห้องเรียน</th>
+                <th>ปี</th>
+                <th>ชั่วโมง</th>
+                <th>ครูผู้สอน</th>
+                <th class="btn-th"><button class="btn" onclick="openOverlay()">+</button></th>
+            </tr>
+
+            <% subjects.forEach(sub=> { %>
+                <tr>
+                    <td>
+                        <%= sub.subject_code %>
+                    </td>
+                    <td>
+                        <%= sub.subject_name %>
+                    </td>
+                    <td>
+                        <%= sub.Department?.department_name %>
+                    </td>
+                    <td>
+                        <%= sub.Classroom?.classroom_name %>
+                    </td>
+                    <td>
+                        <%= sub.year %>
+                    </td>
+                    <td>
+                        <%= sub.hours %>
+                    </td>
+                    <td>
+                        <% sub.Teachers.forEach(t=> { %>
+                            <%= t.PersonalDatum.first_name %>
+                                <%= t.PersonalDatum.last_name %><br>
+                                    <% }) %>
+                    </td>
+                   <td>
+                        <button onclick="openEditSubject('<%= sub.subject_id %>','<%= sub.subject_code %>','<%= sub.subject_name %>','<%= sub.department_id %>','<%= sub.classroom_id %>','<%= sub.year %>','<%= sub.hours %>')">
+                             แก้ไข
+                        </button>
+                        <button onclick="openSectionModal('<%= sub.subject_id %>')">
+                            เพิ่ม Section
+                        </button>
+                    </td>
+
+                </tr>
+                <% }) %>
+
+        </table>
+        </div>
+        
+</body>
+
+</html>

@@ -1,0 +1,23 @@
+<div class="navbar">
+    <div class="logo">
+        <img src="/img/logo-test.svg" alt="Logo">
+    </div>
+    <div class="nav-tab">
+        <div class="user">
+            <div class="user-info">
+                <div class="name"><%=pd.first_name%> <%=pd.last_name%> (<%=user.role %>)</div>
+                <div class="id"><%= sc.student_code %></div>
+            </div>
+            <div class="profile-pic"></div>
+        </div>
+        <div class="menu">
+            <form action="/logout" method="POST">
+                <button type="submit" class="logout">Logout</button>
+            </form>
+            <button class="normal"><a href="/subject-scd">ตารางสอน</a></button>
+            <button class="normal"><a href="/scorestu">ข้อมูลคะแนนเก็บ</a></button>
+            <button class="normal"><a href="/dashboard">ข้อมูลส่วนตัว</a></button>
+            <button onclick="location.href='/'" class="normal">◄ กลับหน้าหลัก</button>
+        </div>
+    </div>
+</div>

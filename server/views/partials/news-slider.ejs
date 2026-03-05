@@ -1,0 +1,17 @@
+<div class="header <%= layout %>">
+    <div class="header_left">
+        <h1><%= title %></h1>
+        <p><%= description %></p>
+    </div>
+
+    <div class="header_right">
+        <div class="slider">
+            <% images.forEach((img, index) => { %>
+                <img src="<%= img %>" class="slide <%= index === 0 ? 'active' : '' %>">
+            <% }) %>
+        </div>
+
+        <button class="nav-btn left">&#10094;</button>
+        <button class="nav-btn right">&#10095;</button>
+    </div>
+</div>

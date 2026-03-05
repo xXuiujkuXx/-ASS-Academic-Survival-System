@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/add-stu.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+
+<div id="popup" class="popup" style="display: none;">
+    <div class="popup-content">
+        <h3>เพิ่มนักเรียนเข้า Section</h3>
+
+        <form method="POST" action="/save-enrollment">
+            <input type="hidden" name="subject_code" id="popup-subject">
+            <input type="hidden" name="section" id="popup-section">
+
+            <% students.forEach(stu => { %>
+                <div>
+                    <input type="checkbox" 
+                           name="students" 
+                           value="<%= stu.student_code %>">
+                    <%= stu.student_code %>
+                </div>
+            <% }) %>
+
+            <br>
+            <button type="submit">บันทึก</button>
+            <button type="button" onclick="closePopup()">ยกเลิก</button>
+        </form>
+    </div>
+</div>
+
+<body>
+<%- include("navbar-staff") %>
+
+<h3>รายการวิชาทั้งหมด</h3>
+
+<div class="score-con">
+<table width="100%">
+    <tr>
+        <th></th>
+        <th>รหัสวิชา</th>
+        <th>ชื่อวิชา</th>
+    </tr>
+
+    <% subjects.forEach((sub, index) => { %>
+
+        <!-- แถวหลัก -->
+        <tr id="main-row">
+            <td style="width:60px; text-align:center;">
+                <button type="button" onclick="toggleRow(<%= index %>, this)">▼</button>
+            </td>
+            <td><%= sub.subject_code %></td>
+            <td><%= sub.subject_name %></td>
+        </tr>
+
+        <!-- แถวที่ซ่อน -->
+        <tr id="detail-<%= index %>" style="display:none; background:#f9f9f9;">
+            <td colspan="3">
+                <b>Section</b><br><br>
+                <% if (sub.SubjectSchedules && sub.SubjectSchedules.length > 0) { %>
+                    <% sub.SubjectSchedules.forEach(sch => { %>
+                        <div style="margin-bottom:8px;">
+                            Section <%= sch.section %> : <%= sch.day_of_week %> <%= sch.start_time.substring(0,5) %> - <%= sch.end_time.substring(0,5) %>
+                            <button type="button" onclick="openPopup('<%= sub.subject_code %>', '<%= sch.section %>')">Add Student</button>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div style="color:gray; font-style:italic;">
+                        &lt;no section add&gt;
+                    </div>
+                <% } %>
+            </td>
+        </tr>
+    <% }) %>
+</table>
+</div>
+
+<script>
+function toggleRow(id, btn){
+    const row = document.getElementById("detail-" + id);
+    const mainRow = document.getElementById("main-row");
+
+    if (row.style.display === "none") {
+        row.style.display = "table-row";
+        mainRow.classList.add("active-row");
+    } else {
+        row.style.display = "none";
+        mainRow.classList.remove("active-row");
+    }
+}
+
+function openPopup(subject, section){
+    document.getElementById("popup").style.display = "flex";
+    document.getElementById("popup-subject").value = subject;
+    document.getElementById("popup-section").value = section;
+}
+
+function closePopup(){
+    document.getElementById("popup").style.display = "none";
+}
+</script>
+
+</body>
+
+</html>

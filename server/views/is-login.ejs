@@ -1,0 +1,31 @@
+<div class="navbar">
+    <div class="logo">
+        <img src="/img/logo-test.svg" alt="Logo">
+    </div>
+    <div class="nav-tab">
+        <div class="user">
+            <div class="user-info">
+                <div class="name">
+                    <%= pd.first_name %> <%= pd.last_name %> (<%= user.role %>)
+                </div>
+
+                <div class="id">
+                    <% if (sc) { %>
+                        <%= sc.student_code %>
+                    <% } else if (reg) { %>
+                        <%= reg.admin_code %>
+                    <% } else if (teacher) { %>
+                        <%= teacher.teacher_code %>
+                    <% } %>
+                </div>
+            </div>
+            <div class="profile-pic"></div>
+        </div>
+        <div class="menu">
+            <form action="/logout" method="POST">
+                <button type="submit" class="logout">Logout</button>
+            </form>
+            <button class="normal"><a href="/dashboard">ข้อมูลส่วนตัว</a></button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/homepage-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="script/homeScript.js" defer></script>
+    <title>Document</title>
+</head>
+<body>
+    <% if (user) { %>
+        <%- include('is-login', {user, pd, sc, reg, teacher}) %>
+    <% } else { %>
+        <%- include('not-login') %>
+    <% } %>
+    <div class="main-container">
+        <div class="panel panel1">
+            <div class="bottom-trans">
+                <h2>ภาควิชา</h2>
+            </div>
+            <div class="hover-overlay">
+                <div class="hover-content">
+                    <h2>ภาควิชา</h2>
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel2">
+            <div class="bottom-trans">
+                <h2>หลักสูตร</h2>
+            </div>
+            <div class="hover-overlay">
+                <div class="hover-content">
+                    <h2>หลักสูตร</h2>
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel3">
+            <div class="bottom-trans">
+                <h2>ผลงาน</h2>
+            </div>
+            <div class="hover-overlay">
+                <div class="hover-content">
+                    <h2>ผลงาน</h2>
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel4">
+            <div class="bottom-trans">
+                <h2>สมัคร</h2>
+            </div>
+            <div class="hover-overlay">
+                <div class="hover-content">
+                    <h2>สมัคร</h2>
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="head-text">
+        <h1>Latest news</h1>
+    </div>
+    <div class="dets">
+
+        <%- include('partials/news-slider', {
+            title: "AKIYAMA MIZUKI",
+            description: "นขยำะนาดนยำพนยดยนำพาดยนาำพดยนาำพด",
+            images: [
+                "https://static.wikitide.net/projectsekaiwiki/b/bf/Mizuki_20_art.png",
+                "https://static.wikitide.net/projectsekaiwiki/f/f1/Mizuki_7_art.png",
+                "https://static.wikitide.net/projectsekaiwiki/3/33/Mizuki_9_art.png"
+            ],
+            layout: "first"
+        }) %>
+
+        <%- include('partials/news-slider', {
+            title: "AKIYAMA MIZUKI",
+            description: "นขยำะนาดนยำพนยดยนำพาดยนาำพดยนาำพด",
+            images: [
+                "https://static.wikitide.net/projectsekaiwiki/b/bf/Mizuki_20_art.png",
+                "https://static.wikitide.net/projectsekaiwiki/f/f1/Mizuki_7_art.png",
+                "https://static.wikitide.net/projectsekaiwiki/3/33/Mizuki_9_art.png"
+            ],
+            layout: "bottom"
+        }) %>
+
+    </div>
+
+</body>
+<script>
+    document.querySelectorAll(".header").forEach(header => {
+
+        const slides = header.querySelectorAll(".slide");
+        const leftBtn = header.querySelector(".nav-btn.left");
+        const rightBtn = header.querySelector(".nav-btn.right");
+
+        let currentIndex = 0;
+        let interval = setInterval(nextSlide, 5000);
+
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove("active"));
+            slides[index].classList.add("active");
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slides.length;
+            showSlide(currentIndex);
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            showSlide(currentIndex);
+        }
+
+        rightBtn.addEventListener("click", () => {
+            nextSlide();
+            resetInterval();
+        });
+
+        leftBtn.addEventListener("click", () => {
+            prevSlide();
+            resetInterval();
+        });
+
+        function resetInterval() {
+            clearInterval(interval);
+            interval = setInterval(nextSlide, 5000);
+        }
+
+    });
+    
+    
+</script>
+</html>
