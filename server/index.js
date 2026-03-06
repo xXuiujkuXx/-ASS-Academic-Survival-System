@@ -285,11 +285,15 @@ app.get('/add-student', isLoggedIn, isAdmin, async (req, res) => {
     res.render('add-student', { user, pd, reg, students });
 });
 
-app.post('/addstudent', async (req, res) => {
+app.post('/addstudent/:id', async (req, res) => {
     try {
-        const {fname, lname, stucode, email, password, gender, dob, phone} = req.body;
+    const {fname, lname, stucode, email, password, gender, dob,phone} = req.body;
 
-        const newAccount = await db.Accounts.create({email, password_hash: password, role: 'student'});
+        const newAccount = await db.Accounts.create({
+            email,
+            password_hash: password,
+            role: 'student'
+        });
 
         await db.PersonalData.create({
             account_id: newAccount.account_id,
@@ -305,9 +309,12 @@ app.post('/addstudent', async (req, res) => {
             email: email,
             student_code: stucode
         });
+
+
         res.redirect(req.get('Referer'));
     } catch (err) {
         console.error(err);
+        res.send("เพิ่มข้อมูลไม่สำเร็จ");
     }
 });
 
@@ -370,18 +377,16 @@ app.get('/add-teacher', isLoggedIn, isAdmin, async (req, res) => {
     }
 });
 
-app.post('/addteacher', async (req, res) => {
-    const t = await db.sequelize.transaction();
+app.post('/addteacher/:id', async (req, res) => {
     try {
-        const {fname, lname, teachercode, departmentid, email, password, gender, dob, phone
-        } = req.body;
 
-        const newAccount = await db.Accounts.create(
-            {
-                email: email,
-                password_hash: password,
-                role: 'teacher'
-            }, { transaction: t });
+        const {fname, lname, teachercode, departmentid, email, password, gender, dob, phone} = req.body;
+
+        const newAccount = await db.Accounts.create({
+            email,
+            password_hash: password,
+            role: 'teacher'
+        });
 
         await db.PersonalData.create({
             account_id: newAccount.account_id,
@@ -390,20 +395,18 @@ app.post('/addteacher', async (req, res) => {
             date_of_birth: dob,
             gender: gender,
             telephone: phone
-        }, { transaction: t });
+        });
 
         await db.Teacher.create({
             account_id: newAccount.account_id,
-            email,
+            email: email,
             department_id: departmentid,
             teacher_code: teachercode
-        }, { transaction: t });
+        });
 
-        await t.commit();
+
         res.redirect(req.get('Referer'));
-
     } catch (err) {
-        await t.rollback();
         console.error(err);
         res.send("เพิ่มข้อมูลไม่สำเร็จ");
     }
