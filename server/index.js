@@ -368,9 +368,8 @@ app.get('/add-teacher', isLoggedIn, isAdmin, async (req, res) => {
                 }
             ]
         });
-        const departments = await db.Department.findAll();
 
-        res.render('add-teacher', { user, pd, reg, teachers ,departments});
+        res.render('add-teacher', { user, pd, reg, teachers });
 
     } catch (err) {
         console.error(err);
@@ -580,10 +579,11 @@ app.post('/add-subject/:id', async (req, res) => {
             subject_id: newSubject.subject_id
         });
 
-        res.redirect('/add-subject/' + req.params.id);
+        res.redirect('/add-subject');
 
     } catch (err) {
         console.error(err);
+        res.status(500).send("เพิ่มวิชาไม่สำเร็จ");
     }
 });
 
