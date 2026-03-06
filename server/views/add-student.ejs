@@ -119,7 +119,7 @@ function closeEdit() {
                     <td><%= item.student_code %></td>
                     <td><%= item.Account.email %></td>
                     <td><%= item.PersonalDatum.gender %></td>
-                    <td><%= item.PersonalDatum.date_of_birth %></td>
+                    <td><%= new Date(item.PersonalDatum.date_of_birth).toLocaleDateString('th-TH', { day: 'numeric', month: 'long' , year: 'numeric' }) %></td>
                     <td><%= item.PersonalDatum.telephone %></td>
                 
                     <td>
