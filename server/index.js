@@ -368,8 +368,9 @@ app.get('/add-teacher', isLoggedIn, isAdmin, async (req, res) => {
                 }
             ]
         });
+        const departments = await db.Department.findAll();
 
-        res.render('add-teacher', { user, pd, reg, teachers });
+        res.render('add-teacher', { user, pd, reg, teachers ,departments});
 
     } catch (err) {
         console.error(err);
