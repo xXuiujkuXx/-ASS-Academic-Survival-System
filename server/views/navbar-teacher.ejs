@@ -1,23 +1,36 @@
-<div class="navbar">
-    <div class="logo">
-        <img src="/img/logo-test.svg" alt="Logo">
-    </div>
-    <div class="nav-tab">
-        <div class="user">
-            <div class="user-info">
-                <div class="name"><%=pd.first_name%> <%=pd.last_name%> (<%=user.role %>)</div>
-                <div class="id"><%= teacher ? teacher.teacher_code : '-' %></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <svg viewBox="0 0 500 120">
+                <text x="0" y="80" font-family="Kanit">My Logo</text>
+            </svg>
+        </div>
+        <div class="nav-tab">
+            <div class="user">
+                <div class="user-info">
+                    <div class="name"><%=pd.first_name%> <%=pd.last_name%> (<%=user.role %>)</div>
+                    <div class="id"><%= teacher ? teacher.teacher_code : '-' %></div>
+                </div>
+                <div class="profile-pic"></div>
             </div>
-            <div class="profile-pic"></div>
-        </div>
-        <div class="menu">
-            <form action="/logout" method="POST">
-                <button type="submit" class="logout">Logout</button>
-            </form>
-            <button class="normal"><a href="/subject-scd">ตารางสอน</a></button>
-            <button class="normal"><a href="/update-score">แก้ไขคะแนนเก็บ</a></button>
-            <button class="normal"><a href="/dashboard">ข้อมูลส่วนตัว</a></button>
-            <button onclick="location.href='/'" class="normal">◄ กลับหน้าหลัก</button>
+            <div class="menu">
+                <form action="/logout" method="POST">
+                    <button type="submit" class="logout">ออกจากระบบ</button>
+                </form>
+                <button class="normal"><a href="/subject-scd">ตารางสอน</a></button>
+                <button class="normal"><a href="/update-score">แก้ไขคะแนนเก็บ</a></button>
+                <button class="normal"><a href="/dashboard">ข้อมูลส่วนตัว</a></button>
+                <button onclick="location.href='/'" class="normal">◄ กลับหน้าหลัก</button>
+            </div>
         </div>
     </div>
-</div>
+</body>
+</html>
