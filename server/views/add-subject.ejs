@@ -23,13 +23,12 @@
         }
     }
 
-    function openEditSubject(id, code, name, dep, room, year, hours) {
+    function openEditSubject(id, code, name, dep, room, year) {
 
         document.getElementById('edit_subject_id').value = id;
         document.getElementById('edit_subject_code').value = code;
         document.getElementById('edit_subject_name').value = name;
         document.getElementById('edit_year').value = year;
-        document.getElementById('edit_hours').value = hours;
 
         document.getElementById('editSubjectForm').action = "/edit-subject/" + id;
 
@@ -142,7 +141,7 @@ function addSectionRow(sec = null) {
 <div class="overlay" id="passwordOverlay" onclick="closeIfOutside(event)">
     <div class="box">
         <button class="close-btn" onclick="closeOverlay()">✕</button>
-        <h2>Change Password</h2>
+        <h2>เพิ่มวิชา</h2>
         <form action="/add-subject/<%= user.account_id %>" method="POST">
 
             <label>รหัสวิชา</label>
@@ -172,7 +171,6 @@ function addSectionRow(sec = null) {
             <label>ปีการศึกษา</label>
             <input type="number" name="year" required>
 
-        
             <label>คุณครูผู้สอน</label>
             <select name="teacher_id" required>
                 <% teachers.forEach(t=> { %>
@@ -197,19 +195,27 @@ function addSectionRow(sec = null) {
 
     <form id="editSubjectForm" method="POST">
 
-      <input type="hidden" name="subject_id" id="edit_subject_id">
+      <input type="hidden" name="subject_id" id="edit_subject_id" required>
 
       <label>รหัสวิชา</label>
-      <input type="text" name="subject_code" id="edit_subject_code">
+      <input type="text" name="subject_code" id="edit_subject_code" required>
 
       <label>ชื่อวิชา</label>
-      <input type="text" name="subject_name" id="edit_subject_name">
+      <input type="text" name="subject_name" id="edit_subject_name" required>
 
       <label>ปี</label>
-      <input type="number" name="year" id="edit_year">
+      <input type="number" name="year" id="edit_year" required>
+      
+      <label>ครูผู้สอน</label>
+        <select name="teacher_id" id="edit_teacher_id">
 
-      <label>ชั่วโมง</label>
-      <input type="number" name="hours" id="edit_hours">
+        <% teachers.forEach(t => { %>
+        <option value="<%= t.teacher_id %>">
+        <%= t.PersonalDatum.first_name %> <%= t.PersonalDatum.last_name %>
+        </option>
+        <% }) %>
+
+        </select>
 
       <button type="submit">บันทึก</button>
 
@@ -229,7 +235,6 @@ function addSectionRow(sec = null) {
                 <th>ภาควิชา</th>
                 <th>ห้องเรียน</th>
                 <th>ปี</th>
-                <th>ชั่วโมง</th>
                 <th>ครูผู้สอน</th>
                 <th class="btn-th"><button class="btn" onclick="openOverlay()">+</button></th>
             </tr>
@@ -252,16 +257,21 @@ function addSectionRow(sec = null) {
                         <%= sub.year %>
                     </td>
                     <td>
-                        <%= sub.hours %>
-                    </td>
-                    <td>
                         <% sub.Teachers.forEach(t=> { %>
                             <%= t.PersonalDatum.first_name %>
                                 <%= t.PersonalDatum.last_name %><br>
                                     <% }) %>
                     </td>
                    <td>
-                        <button onclick="openEditSubject('<%= sub.subject_id %>','<%= sub.subject_code %>','<%= sub.subject_name %>','<%= sub.department_id %>','<%= sub.classroom_id %>','<%= sub.year %>','<%= sub.hours %>')">
+                        <button onclick="openEditSubject(
+                            '<%= sub.subject_id %>',
+                            '<%= sub.subject_code %>',
+                            '<%= sub.subject_name %>',
+                            '<%= sub.department_id %>',
+                            '<%= sub.classroom_id %>',
+                            '<%= sub.year %>',
+                            '<%= sub.Teachers[0]?.teacher_id %>'
+                            )">
                              แก้ไข
                         </button>
                         <button onclick="openSectionModal('<%= sub.subject_id %>')">
