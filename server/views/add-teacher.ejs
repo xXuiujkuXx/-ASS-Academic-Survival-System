@@ -52,8 +52,8 @@ function closeEdit() {
             <label for="teachercode">รหัสคุณครู</label>
             <input type="text" name="teachercode">
             <label for="departmentid">ภาควิชา</label>
-            <select name="departmentid">
-                <% departments.forEach(dep => { %>
+            <select name="department_id" required>
+                <% departments.forEach(dep=> { %>
                     <option value="<%= dep.department_id %>">
                         <%= dep.department_name %>
                     </option>
