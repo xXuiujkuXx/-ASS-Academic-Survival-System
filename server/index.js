@@ -82,10 +82,15 @@ app.post('/reto-login', (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-    const {username, password} = req.body;
+    let { username, password } = req.body;
+
+    username = username.trim();
 
     const user = await db.Accounts.findOne({
-        where: { email: username }
+        where: db.Sequelize.where(
+            db.Sequelize.fn('TRIM', db.Sequelize.col('email')),
+            username
+        )
     });
 
     if (!user || user.password_hash !== password) {
@@ -99,10 +104,6 @@ app.post('/login', async (req, res) => {
 
     if (user.role === 'admin') {
         return res.redirect('/admin');
-    }
-
-    if (user.role === 'teacher') {
-        return res.redirect('/dashboard');
     }
 
     return res.redirect('/dashboard');
@@ -368,8 +369,9 @@ app.get('/add-teacher', isLoggedIn, isAdmin, async (req, res) => {
                 }
             ]
         });
+        const departments = await db.Department.findAll();
 
-        res.render('add-teacher', { user, pd, reg, teachers });
+        res.render('add-teacher', { user, pd, reg, teachers ,departments});
 
     } catch (err) {
         console.error(err);
@@ -587,26 +589,31 @@ app.post('/add-subject/:id', async (req, res) => {
     }
 });
 
-app.post('/edit-subject-teacher/:subjectId', async (req, res) => {
+app.post('/edit-subject/:id', async (req, res) => {
     try {
 
-        const { teacher_id } = req.body;
-        const subjectId = req.params.subjectId;
+        const id = req.params.id;
 
-        await db.TeacherSubject.destroy({
-            where: { subject_id: subjectId }
+        const { subject_code, subject_name, year, hours, teacher_id } = req.body;
+
+        const subject = await db.Subject.findByPk(id);
+
+        await subject.update({
+            subject_code,
+            subject_name,
+            year,
+            hours
         });
+        
+        await subject.setTeachers([]);
 
-        await db.TeacherSubject.create({
-            subject_id: subjectId,
-            teacher_id: teacher_id
-        });
+        await subject.addTeacher(teacher_id);
 
-        res.redirect(req.get('Referer'));
+        res.redirect('/add-subject');
 
     } catch (err) {
         console.error(err);
-        res.status(500).send("แก้ไขไม่สำเร็จ");
+        res.send("Error updating subject");
     }
 });
 
