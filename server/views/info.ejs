@@ -31,7 +31,7 @@
             <input type="password" placeholder="Old Password" name="opass">
             <input type="password" placeholder="New Password" name="npass">
             <input type="password" placeholder="Confirm Password" name="cnpass">
-            <button type="submit" class="change-btn">Change Password</button>
+            <button type="submit" class="change-btn">เปลี่ยนรหัส</button>
         </form>
     </div>
 </div>
@@ -58,15 +58,11 @@
                 <div class="profile-image">
                     <img src="" alt="">
                 </div>
-                <button class="edit-btn">Edit Image</button>
+                <button class="edit-btn">แก้ไขรูป</button>
             </div>
 
             <div class="profile-right">
                 <div class="info-row"><span>ชื่อ (ไทย) :</span><%=pd.first_name%> <%=pd.last_name%></div>
-                <div class="info-row"><span>ชื่อ (อังกฤษ) :</span> Mr. Josh something</div>
-                
-                <div class="info-row"><span>ภาควิชา :</span> วิทย์-คณิต</div>
-                
                 <div class="info-row"><span>Email :</span> <%= sc ? sc.email : user.email %></div>
                 <div class="info-row"><span>รหัสผ่าน :</span> <%= user.password_hash%></div>
                 <button class="pass-btn" onclick="openOverlay()">Change Password</button>
@@ -81,8 +77,7 @@
                 <%} else {%>
                     <div class="info-row"><span>เบอร์โทรศัพท์ :</span> -</div>
                 <%}%>
-                <div class="info-row"><span>DOB :</span> 20 Jan. 1953</div>
-                <div class="info-row"><span>สัญชาติ :</span> United States</div>
+                <div class="info-row"><span>DOB :</span><%= pd.date_of_birth %></div>
             </div>
         </div>
     </div>
