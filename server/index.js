@@ -948,14 +948,7 @@ app.get('/update-score', isLoggedIn, async (req, res) => {
 
 app.post('/update-score/:id', async (req, res) => {
     try {
-        const {
-            student_code,
-            subject_code,
-            section,
-            score,
-            midscore,
-            finalscore
-        } = req.body;
+        const {student_code,subject_code,section,score,midscore,finalscore} = req.body;
 
         await db.Enrollments.update(
             {
