@@ -61,6 +61,24 @@ body {
     margin-right: 20px;
 }
 
+button {
+  padding: 10px;
+  background : transparent;
+  border: 1px solid #3394ec;
+  color: #3394ec;
+  font-size: 20px;
+  font-weight: 400;
+  font-family: 'Kanit', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+}
+
 .score-con {
     background: white;
     padding: 20px;
