@@ -262,8 +262,9 @@ function addSectionRow(sec = null) {
                                 <%= t.PersonalDatum.last_name %><br>
                                     <% }) %>
                     </td>
-                   <td>
-                        <button onclick="openEditSubject(
+                   <td class="action-buttons">
+                        <button class="btn-edit"
+                            onclick="openEditSubject(
                             '<%= sub.subject_id %>',
                             '<%= sub.subject_code %>',
                             '<%= sub.subject_name %>',
@@ -272,10 +273,12 @@ function addSectionRow(sec = null) {
                             '<%= sub.year %>',
                             '<%= sub.Teachers[0]?.teacher_id %>'
                             )">
-                             แก้ไข
+                            แก้ไข
                         </button>
-                        <button onclick="openSectionModal('<%= sub.subject_id %>')">
-                            เพิ่ม Section
+
+                        <button class="btn-add"
+                            onclick="openSectionModal('<%= sub.subject_id %>')">
+                            เพิ่มกลุ่ม
                         </button>
                     </td>
 
