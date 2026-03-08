@@ -43,7 +43,7 @@ function closeEdit() {
 <div class="overlay" id="passwordOverlay" onclick="closeIfOutside(event)">
     <div class="box">
         <button class="close-btn" onclick="closeOverlay()">✕</button>
-        <h2>Change Password</h2>
+        <h2>เพิ่มครู</h2>
         <form class="form" action="/addteacher/<%= user.account_id %>"" method="POST">
             <label for="fname">ชื่อ</label>
             <input type="text" name="fname">
