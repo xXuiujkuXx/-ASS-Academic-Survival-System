@@ -946,9 +946,17 @@ app.get('/update-score', isLoggedIn, async (req, res) => {
     res.render('update-score',{pd, user, teacher, data});
 });
 
-app.post('/update-score', isLoggedIn, async (req, res) => {
+app.post('/update-score/:id', async (req, res) => {
     try {
-        const {student_code, subject_code, section, score, midscore, finalscore} = req.body;
+        const {
+            student_code,
+            subject_code,
+            section,
+            score,
+            midscore,
+            finalscore
+        } = req.body;
+
         await db.Enrollments.update(
             {
                 student_assignment_score: score,
@@ -956,8 +964,7 @@ app.post('/update-score', isLoggedIn, async (req, res) => {
                 student_final_score: finalscore
             },
             {
-                where: 
-                {
+                where: {
                     student_code : student_code,
                     subject_code,
                     section
@@ -966,8 +973,10 @@ app.post('/update-score', isLoggedIn, async (req, res) => {
         );
 
         res.redirect(req.get('Referer'));
+
     } catch (err) {
         console.error(err);
+        res.status(500).send("Update score error");
     }
 });
 
