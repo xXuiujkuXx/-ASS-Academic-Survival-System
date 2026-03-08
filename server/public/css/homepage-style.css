@@ -24,8 +24,9 @@ body {
     transform: translateX(-20px);
 }
 
-.logo img{
-    height: 180%;  
+.logo svg{
+    width: 100%;
+    max-width: 400px;
 }
 
 .nav-tab {
