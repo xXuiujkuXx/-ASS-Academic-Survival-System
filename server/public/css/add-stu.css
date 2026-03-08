@@ -23,8 +23,9 @@ body {
     transform: translateX(-20px);
 }
 
-.logo img{
-    height: 180%;  
+.logo svg{
+    width: 100%;
+    max-width: 400px;
 }
 
 .nav-tab {
@@ -246,11 +247,10 @@ table {
 
 
  th {
-
     background: #3b8edb;
     color: white;
     padding: 12px;
-    font-weight: 500;
+    font-weight: 400;
     position: sticky;
     top: 0;
     z-index: 50;
@@ -275,6 +275,7 @@ td {
     cursor: pointer;
     font-family: 'Kanit', sans-serif;
     font-size: 25px;
+    
 }
 
 button {
@@ -304,4 +305,62 @@ h3 {
     color: #3394ec;
     font-size: 2em;
     
+}
+
+.action-buttons{
+    display: flex;
+    gap: 10px;
+}
+
+.action-buttons button{
+    width: 100%;
+    height: 100%;
+    border: 1px solid #2b7de9;
+    background: white;
+    color: #2b7de9;
+    
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.action-buttons button:hover{
+    background: #2b7de9;
+    color: white;
+}
+
+#sectionContainer div{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+    border:1px solid #ddd;
+    padding:12px;
+    margin-bottom:12px;
+    border-radius:6px;
+    background:#fafafa;
+}
+
+#sectionContainer label{
+    font-weight:500;
+}
+
+#sectionContainer input,
+#sectionContainer select{
+    padding:5px 8px;
+    border:1px solid #2b7de9;
+    border-radius:4px;
+}
+
+#sectionContainer button{
+    padding:6px 12px;
+    border:1px solid #2b7de9;
+    background:white;
+    color:#2b7de9;
+    border-radius:4px;
+    cursor:pointer;
+}
+
+#sectionContainer button:hover{
+    background:#2b7de9;
+    color:white;
 }
