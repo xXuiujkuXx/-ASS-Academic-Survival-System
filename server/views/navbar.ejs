@@ -8,7 +8,12 @@
                 <div class="name"><%=pd.first_name%> <%=pd.last_name%> (<%=user.role %>)</div>
                 <div class="id"><%= sc.student_code %></div>
             </div>
-            <div class="profile-pic"></div>
+            <div class="profile-pic"
+                style="background-image:
+                url('/uploads/profile/<%= user.account_id %>.png'),
+                url('/uploads/profile/<%= user.account_id %>.jpg'),
+                url('/img/default-profile.jpg')">
+            </div>
         </div>
         <div class="menu">
             <form action="/logout" method="POST">

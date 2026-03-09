@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/reg-student-style.css">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <title>ข้อมูลส่วนตัว</title>
+    <title>Document</title>
 </head>
 <script>
     function openOverlay() {
@@ -26,11 +26,11 @@
 <div class="overlay" id="passwordOverlay" onclick="closeIfOutside(event)">
     <div class="box">
         <button class="close-btn" onclick="closeOverlay()">✕</button>
-        <h2>เปลี่ยนรหัสผ่าน</h2>
+        <h2>Change Password</h2>
         <form class="ch" action="/changepass" method="POST">
-            <input type="password" placeholder="รหัสผ่านเก่า" name="opass">
-            <input type="password" placeholder="รหัสผ่านใหม่" name="npass">
-            <input type="password" placeholder="ยืนยันการเปลี่ยนรหัส" name="cnpass">
+            <input type="password" placeholder="Old Password" name="opass">
+            <input type="password" placeholder="New Password" name="npass">
+            <input type="password" placeholder="Confirm Password" name="cnpass">
             <button type="submit" class="change-btn">เปลี่ยนรหัส</button>
         </form>
     </div>
@@ -56,16 +56,31 @@
         <div class="pfp-container">
             <div class="profile-left">
                 <div class="profile-image">
-                    <img src="" alt="">
+                    <img src="/uploads/profile/<%= user.account_id %>.png"
+                        onerror="
+                            if(this.src.includes('.png')){
+                                this.src='/uploads/profile/<%= user.account_id %>.jpg';
+                            } else {
+                                this.src='/img/default-profile.jpg';
+                            }
+                        ">
                 </div>
-                <button class="edit-btn">แก้ไขรูป</button>
-            </div>
 
+                <button class="edit-btn" onclick="document.getElementById('pfpUpload').click()">
+                    แก้ไขรูป
+                </button>
+
+                <form id="uploadForm" action="/upload-profile" method="POST" enctype="multipart/form-data">
+                    <input type="file" id="pfpUpload" name="profile" accept="image/*" style="display:none" onchange="document.getElementById('uploadForm').submit()">
+                </form>
+            </div>
             <div class="profile-right">
                 <div class="info-row"><span>ชื่อ (ไทย) :</span><%=pd.first_name%> <%=pd.last_name%></div>
                 <div class="info-row"><span>Email :</span> <%= sc ? sc.email : user.email %></div>
-                <div class="info-row"><span>รหัสผ่าน :</span> <%= user.password_hash%></div>
-                <button class="pass-btn" onclick="openOverlay()">เปลี่ยนรหัสผ่าน</button>
+                <div class="info-row">
+                    <span>รหัสผ่าน :</span> <%= '*'.repeat(user.password_hash.length) %>
+                </div>
+                <button class="pass-btn" onclick="openOverlay()">Change Password</button>
                 <% if (pd.gender == 'male') { %>
                     <div class="info-row"><span>เพศ :</span> ชาย</div>
                 <%} else {%>
@@ -77,7 +92,7 @@
                 <%} else {%>
                     <div class="info-row"><span>เบอร์โทรศัพท์ :</span> -</div>
                 <%}%>
-                <div class="info-row"><span>DOB :</span><%= new Date(pd.date_of_birth).toLocaleDateString('th-TH') %></div>
+                <div class="info-row"><span>DOB :</span><%= pd.date_of_birth %></div>
             </div>
         </div>
     </div>

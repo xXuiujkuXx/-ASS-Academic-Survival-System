@@ -3,6 +3,31 @@ const session = require('express-session');
 const app = express();
 const port = 3001;
 const db = require('./models');
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/uploads/profile/");
+    },
+    filename: function (req, file, cb) {
+
+        const userId = req.session.user.id;
+        const ext = path.extname(file.originalname);
+
+        cb(null, userId + ext);
+    }
+});
+
+const upload = multer({ storage: storage });
+
+const fs = require("fs");
+
+const uploadPath = "public/uploads/profile";
+
+if (!fs.existsSync(uploadPath)) {
+    fs.mkdirSync(uploadPath, { recursive: true });
+}
 
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
@@ -15,6 +40,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: { secure: false }
 }));
+
 
 // check state
 
@@ -851,6 +877,18 @@ app.get('/dashboard', isLoggedIn, async (req, res) => {
     }
 
     res.render('info', { user, pd, sc, teacher, reg });
+});
+
+app.post('/upload-profile', isLoggedIn, upload.single('profile'), async (req, res) => {
+
+    const filename = req.file.filename;
+
+    await db.Accounts.update(
+        { profile_image: filename },
+        { where: { account_id: req.session.user.id } }
+    );
+
+    res.redirect('/dashboard');
 });
 
 /*
