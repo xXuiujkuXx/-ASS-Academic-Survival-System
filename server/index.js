@@ -104,7 +104,12 @@ app.get('/', async (req, res) => {
 });
 
 app.post('/reto-login', (req, res) => {
-    res.render('login');
+    res.render('login', { error: null });
+});
+
+app.get('/login', (req, res) => {
+    const error = req.query.error;
+    res.render('login', { error });
 });
 
 app.post('/login', async (req, res) => {
@@ -120,7 +125,7 @@ app.post('/login', async (req, res) => {
     });
 
     if (!user || user.password_hash !== password) {
-        return res.send("Email หรือ Password ไม่ถูกต้อง");
+        return res.redirect('/login?error=1');
     }
 
     req.session.user = {

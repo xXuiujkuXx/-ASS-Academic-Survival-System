@@ -8,37 +8,59 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <title>Login</title>
 </head>
-
 <body>
-
-    <div class="container">
-        <div class="card">
-
-            <div class="left">
-                <img src="img/info-bg.jpg" alt="Login Image">
-            </div>
-
-            <div class="right">
-                <h1>ยินดีต้อนรับ</h1>
-                <p class="subtitle">กรุณาเข้าสู่ระบบ</p>
-
-                <form action="/login" method="POST">
-
-                    <div class="form-group">
-                        <input type="text" name="username" placeholder="Username" required>
-                    </div>
-
-                    <div class="form-group">
-                        <input type="password" name="password" placeholder="Password" required>
-                    </div>
-
-                    <button type="submit">เข้าสู่ระบบ</button>
-
-                </form>
-            </div>
-
-        </div>
+<!-- ERROR OVERLAY -->
+<div class="overlay" id="errorOverlay">
+    <div class="box">
+        <button class="close-btn" onclick="closeOverlay()">✕</button>
+        <h2>เข้าสู่ระบบไม่สำเร็จ</h2>
+        <p>Email หรือ Password ไม่ถูกต้อง</p>
     </div>
+</div>
+<!-- ERROR OVERLAY -->
+<div class="container">
+    <div class="card">
+        <div class="left">
+            <img src="img/info-bg.jpg" alt="Login Image">
+        </div>
+        <div class="right">
+            <h1>ยินดีต้อนรับ</h1>
+            <p class="subtitle">กรุณาเข้าสู่ระบบ</p>
+            <form action="/login" method="POST">
+                <div class="form-group">
+                    <input type="text" name="username" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <button type="submit">เข้าสู่ระบบ</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function openOverlay() {
+        document.getElementById("errorOverlay").style.display = "flex";
+    }
+
+    function closeOverlay() {
+        document.getElementById("errorOverlay").style.display = "none";
+    }
+
+    function closeIfOutside(event) {
+        if (event.target.classList.contains("overlay")) {
+            closeOverlay();
+        }
+    }
+
+    <% if (error) { %>
+    window.onload = function(){
+        openOverlay();
+    }
+    <% } %>
+</script>
 
 </body>
 </html>
