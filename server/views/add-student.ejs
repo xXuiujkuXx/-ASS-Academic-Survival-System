@@ -40,31 +40,31 @@ function closeEdit() {
   document.getElementById('editOverlay').style.display = "none";
 }
 </script>
-<!-- CHANGE PASSWORD OVERLAY -->
+
 <div class="overlay" id="passwordOverlay" onclick="closeIfOutside(event)">
     <div class="box">
         <button class="close-btn" onclick="closeOverlay()">✕</button>
         <h2>เพิ่มนักเรียน</h2>
-        <form class="form" action="/addstudent/<%= user.account_id %>"" method="POST">
+        <form class="form" action="/addstudent/<%= user.account_id %>" method="POST">
             <label for="fname">ชื่อ</label>
-            <input type="text" name="fname">
+            <input type="text" name="fname" required>
             <label for="lname">นามสกุล</label>
-            <input type="text" name="lname">
+            <input type="text" name="lname" required>
             <label for="stucode">รหัสนักเรียน</label>
-            <input type="text" name="stucode">
+            <input type="text" name="stucode" required>
             <label for="email">อีเมล</label>
-            <input type="text" name="email">
+            <input type="text" name="email"required>
             <label for="password">รหัสผ่าน</label>
-            <input type="text" name="password">
+            <input type="text" name="password"required>
             <label>เพศ</label>
-            <select name="gender">
+            <select name="gender" required>
                 <option value="male">male</option>
                 <option value="female">female</option>
             </select>
             <label for="dob">วันเกิด</label>
-            <input type="date" name="dob">
+            <input type="date" name="dob" required>
             <label for="phone">เบอร์โทรศัพท์</label>
-            <input type="text" name="phone">
+            <input type="text" name="phone" required>
         
             <input type="submit" name="submit" id="submit" value="เพิ่มนักเรียน">
         </form>
@@ -80,16 +80,16 @@ function closeEdit() {
       <input type="hidden" name="student_id" id="student_id">
 
       <label>ชื่อ</label>
-      <input type="text" name="fname" id="fname">
+      <input type="text" name="fname" id="fname" required>
 
       <label>นามสกุล</label>
-      <input type="text" name="lname" id="lname">
+      <input type="text" name="lname" id="lname" required>
 
       <label>อีเมล</label>
-      <input type="text" name="email" id="email">
+      <input type="text" name="email" id="email" required>
 
       <label>เบอร์โทร</label>
-      <input type="text" name="phone" id="phone">
+      <input type="text" name="phone" id="phone" required>
 
 
 
