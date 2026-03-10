@@ -6,7 +6,11 @@
         <div class="user">
             <div class="user-info">
                 <div class="name">
-                    <%= pd.first_name %> <%= pd.last_name %> (<%= user.role %>)
+                    <%= pd.first_name %>
+                        <%= pd.last_name %> (
+                            <%= user.role==='student' ? 'นักเรียน' : user.role==='teacher' ? 'คุณครู' :
+                                user.role==='admin' ? 'เจ้าหน้าที่สำนักทะเบียน' : user.role %>
+                                )
                 </div>
 
                 <div class="id">
