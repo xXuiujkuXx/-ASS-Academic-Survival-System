@@ -45,7 +45,7 @@
 <body>
     <%- include("navbar-teacher") %>
     <div class="con">
-        <h1 class="title">คะแนนเก็บวิชา </h1>
+        <h1 class="title">คะแนนเก็บ</h1>
         <div class="score-con">
             <table class="score-table">
                 <thead>
@@ -64,9 +64,9 @@
                     <% const totalScore = (item.student_final_score || 0) +(item.student_assignment_score || 0) +(item.student_midterm_score || 0); %>
                     <tr>
                         <td><%= item.student_code %> </td>
-                        <td><%= item.student_assignment_score %></td>
-                        <td><%= item.student_midterm_score %></td>
-                        <td><%= item.student_final_score %></td>
+                        <td><%= item.student_assignment_score ?? '-' %></td>
+                        <td><%= item.student_midterm_score ?? '-' %></td>
+                        <td><%= item.student_final_score ?? '-' %></td>
                         <td><%= totalScore %></td>
                         <td><button onclick="openEditModal(
                             '<%= item.student_code %>',
