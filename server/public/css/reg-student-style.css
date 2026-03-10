@@ -81,7 +81,7 @@ button:hover {
 
 .score-con {
     background: white;
-    padding: 20px;
+    padding: 0px 20px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
@@ -398,3 +398,7 @@ button:hover {
     color: white;
 }
 
+.title {
+    text-align: center;
+    color: #3b8edb;
+}
