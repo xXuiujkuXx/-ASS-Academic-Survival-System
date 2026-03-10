@@ -207,7 +207,7 @@ function addSectionRow(sec = null) {
       <input type="number" name="year" id="edit_year" required>
       
       <label>ครูผู้สอน</label>
-        <select name="teacher_id" id="edit_teacher_id">
+        <select name="teacher_id" id="edit_teacher_id" required>
 
         <% teachers.forEach(t => { %>
         <option value="<%= t.teacher_id %>">
