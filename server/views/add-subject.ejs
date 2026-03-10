@@ -82,7 +82,7 @@ function addSectionRow(sec = null) {
     const endTime = sec?.end_time ? sec.end_time.substring(0,5) : "";
 
     row.innerHTML = `
-        <label>Section</label>
+        <label>กลุ่มเรียน</label>
         <input type="number" name="sections[${sectionIndex}][section]"
                value="${sec?.section || sectionIndex+1}" required>
 
@@ -91,11 +91,11 @@ function addSectionRow(sec = null) {
         <label>วัน</label>
         <select name="sections[${sectionIndex}][day_of_week]" required>
             <option value="">--เลือก--</option>
-            <option value="Mon" ${sec?.day_of_week==="Mon"?"selected":""}>Mon</option>
-            <option value="Tue" ${sec?.day_of_week==="Tue"?"selected":""}>Tue</option>
-            <option value="Wed" ${sec?.day_of_week==="Wed"?"selected":""}>Wed</option>
-            <option value="Thu" ${sec?.day_of_week==="Thu"?"selected":""}>Thu</option>
-            <option value="Fri" ${sec?.day_of_week==="Fri"?"selected":""}>Fri</option>
+            <option value="Mon" ${sec?.day_of_week==="Mon"?"selected":""}>จันทร์</option>
+            <option value="Tue" ${sec?.day_of_week==="Tue"?"selected":""}>อังคาร</option>
+            <option value="Wed" ${sec?.day_of_week==="Wed"?"selected":""}>พุธ</option>
+            <option value="Thu" ${sec?.day_of_week==="Thu"?"selected":""}>พฤหัสบดี</option>
+            <option value="Fri" ${sec?.day_of_week==="Fri"?"selected":""}>ศุกร์</option>
         </select>
 
         <br>
@@ -120,7 +120,7 @@ function addSectionRow(sec = null) {
   <div class="box" style="width:500px; background:white; padding:20px;">
 
     <button onclick="closeSectionModal()" style="float:right;">✕</button>
-    <h3>จัดการ Section</h3>
+    <h3>จัดการกลุ่มเรียน</h3>
 
     <form id="sectionForm" method="POST">
 
@@ -129,7 +129,7 @@ function addSectionRow(sec = null) {
       </div>
 
       <br>
-      <button type="button" onclick="addSectionRow()">+ เพิ่ม Section</button>
+      <button type="button" onclick="addSectionRow()">เพิ่มกลุ่มเรียน</button>
       <br><br>
 
       <button type="submit">บันทึก</button>
