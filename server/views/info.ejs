@@ -26,11 +26,11 @@
 <div class="overlay" id="passwordOverlay" onclick="closeIfOutside(event)">
     <div class="box">
         <button class="close-btn" onclick="closeOverlay()">✕</button>
-        <h2>Change Password</h2>
+        <h2>เปลี่ยนรหัสผ่าน</h2>
         <form class="ch" action="/changepass" method="POST">
-            <input type="password" placeholder="Old Password" name="opass">
-            <input type="password" placeholder="New Password" name="npass">
-            <input type="password" placeholder="Confirm Password" name="cnpass">
+            <input type="password" placeholder="รหัสผ่านเก่า" name="opass">
+            <input type="password" placeholder="รหัสผ่านใหม่" name="npass">
+            <input type="password" placeholder="ยืนยันรหัสผ่านใหม่" name="cnpass">
             <button type="submit" class="change-btn">เปลี่ยนรหัส</button>
         </form>
     </div>
@@ -47,7 +47,7 @@
     <div class="banner">
         <div class="text">
             <h1>ข้อมูลส่วนตัว</h1>
-            <h2>Student Information Office of the Registrar</h2>
+            
         </div>
         <div class="darker"></div>
         <img src="/img/info-bg.jpg">
@@ -76,11 +76,11 @@
             </div>
             <div class="profile-right">
                 <div class="info-row"><span>ชื่อ (ไทย) :</span><%=pd.first_name%> <%=pd.last_name%></div>
-                <div class="info-row"><span>Email :</span> <%= sc ? sc.email : user.email %></div>
+                <div class="info-row"><span>อีเมล :</span> <%= sc ? sc.email : user.email %></div>
                 <div class="info-row">
                     <span>รหัสผ่าน :</span> <%= '*'.repeat(user.password_hash.length) %>
                 </div>
-                <button class="pass-btn" onclick="openOverlay()">Change Password</button>
+                <button class="pass-btn" onclick="openOverlay()">เปลี่ยนรหัสผ่าน</button>
                 <% if (pd.gender == 'male') { %>
                     <div class="info-row"><span>เพศ :</span> ชาย</div>
                 <%} else {%>
@@ -92,7 +92,14 @@
                 <%} else {%>
                     <div class="info-row"><span>เบอร์โทรศัพท์ :</span> -</div>
                 <%}%>
-                <div class="info-row"><span>DOB :</span><%= pd.date_of_birth %></div>
+                <div class="info-row">
+                    <span>วันเกิด :</span>
+                    <%= new Date(pd.date_of_birth).toLocaleDateString('th-TH', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                    }) %>
+                </div>
             </div>
         </div>
     </div>
