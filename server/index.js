@@ -314,12 +314,27 @@ app.get('/add-student', isLoggedIn, isAdmin, async (req, res) => {
         ]
     });
 
-    res.render('add-student', { user, pd, reg, students });
+    res.render('add-student', { 
+        user, 
+        pd, 
+        reg, 
+        students,
+        error: req.query.error
+    });
 });
 
 app.post('/addstudent/:id', async (req, res) => {
     try {
-    const {fname, lname, stucode, email, password, gender, dob,phone} = req.body;
+
+        const {fname, lname, stucode, email, password, gender, dob, phone} = req.body;
+
+        const checkEmail = await db.Accounts.findOne({
+            where: { email: email }
+        });
+
+        if (checkEmail) {
+            return res.redirect('/add-student?error=อีเมลนี้มีอยู่ในระบบแล้ว');
+        }
 
         const newAccount = await db.Accounts.create({
             email,
@@ -342,36 +357,49 @@ app.post('/addstudent/:id', async (req, res) => {
             student_code: stucode
         });
 
+        res.redirect('/add-student?success=เพิ่มนักเรียนสำเร็จ');
 
-        res.redirect(req.get('Referer'));
     } catch (err) {
         console.error(err);
-        res.send("เพิ่มข้อมูลไม่สำเร็จ");
+        res.redirect('/add-student?error=เพิ่มข้อมูลไม่สำเร็จ');
     }
 });
 
 app.post('/edit-student/:id', async (req, res) => {
+    try {
 
-    const { fname, lname, email, phone } = req.body;
+        const { fname, lname, email, phone } = req.body;
 
-    const student = await db.Students.findByPk(req.params.id);
+        const student = await db.Students.findByPk(req.params.id);
 
-    await db.PersonalData.update(
-        {
-            first_name: fname,
-            last_name: lname,
-            telephone: phone
-        },
-        { where: { account_id: student.account_id } }
-    );
+        const checkEmail = await db.Accounts.findOne({
+            where: { email: email }
+        });
 
-    await db.Accounts.update(
-        { email: email },
-        { where: { account_id: student.account_id } }
-    );
+        if (checkEmail && checkEmail.account_id !== student.account_id) {
+            return res.redirect('/add-student?error=อีเมลนี้ถูกใช้งานแล้ว');
+        }
 
+        await db.PersonalData.update(
+            {
+                first_name: fname,
+                last_name: lname,
+                telephone: phone
+            },
+            { where: { account_id: student.account_id } }
+        );
 
-    res.redirect(req.get('Referer'));
+        await db.Accounts.update(
+            { email: email },
+            { where: { account_id: student.account_id } }
+        );
+
+        res.redirect('/add-student');
+
+    } catch (err) {
+        console.log(err);
+        res.redirect('/add-student?error=เกิดข้อผิดพลาด');
+    }
 });
 
 
@@ -400,9 +428,10 @@ app.get('/add-teacher', isLoggedIn, isAdmin, async (req, res) => {
                 }
             ]
         });
+
         const departments = await db.Department.findAll();
 
-        res.render('add-teacher', { user, pd, reg, teachers ,departments});
+        res.render('add-teacher', { user, pd, reg, teachers, departments,error: req.query.error,success: req.query.success});
 
     } catch (err) {
         console.error(err);
@@ -411,15 +440,39 @@ app.get('/add-teacher', isLoggedIn, isAdmin, async (req, res) => {
 });
 
 app.post('/addteacher/:id', async (req, res) => {
+
+    const t = await db.sequelize.transaction();
+
     try {
 
-        const {fname, lname, teachercode, departmentid, email, password, gender, dob, phone} = req.body;
+        const {
+            fname,
+            lname,
+            teachercode,
+            department_id,
+            email,
+            password,
+            gender,
+            dob,
+            phone
+        } = req.body;
 
+        // เช็ค email ซ้ำ
+        const checkEmail = await db.Accounts.findOne({
+            where: { email: email }
+        });
+
+        if (checkEmail) {
+            await t.rollback();
+            return res.redirect('/add-teacher?error=อีเมลนี้มีอยู่ในระบบแล้ว');
+        }
+
+        // สร้าง account
         const newAccount = await db.Accounts.create({
             email,
             password_hash: password,
             role: 'teacher'
-        });
+        }, { transaction: t });
 
         await db.PersonalData.create({
             account_id: newAccount.account_id,
@@ -428,29 +481,44 @@ app.post('/addteacher/:id', async (req, res) => {
             date_of_birth: dob,
             gender: gender,
             telephone: phone
-        });
+        }, { transaction: t });
+
 
         await db.Teacher.create({
             account_id: newAccount.account_id,
             email: email,
-            department_id: departmentid,
+            department_id: department_id,
             teacher_code: teachercode
-        });
+        }, { transaction: t });
 
+        await t.commit();
 
-        res.redirect(req.get('Referer'));
+        res.redirect('/add-teacher?success=เพิ่มอาจารย์สำเร็จ');
+
     } catch (err) {
+
+        await t.rollback();
+
         console.error(err);
-        res.send("เพิ่มข้อมูลไม่สำเร็จ");
+        res.redirect('/add-teacher?error=เพิ่มข้อมูลไม่สำเร็จ');
     }
 });
 
 app.post('/edit-teacher/:id', async (req, res) => {
     try {
-        const {fname, lname, email, phone} = req.body;
+
+        const { fname, lname, email, phone } = req.body;
 
         const teacher = await db.Teacher.findByPk(req.params.id);
-        if (!teacher) return res.send("ไม่พบข้อมูลอาจารย์");
+        if (!teacher) return res.redirect('/add-teacher?error=ไม่พบข้อมูลอาจารย์');
+
+        const checkEmail = await db.Accounts.findOne({
+            where: { email: email }
+        });
+
+        if (checkEmail && checkEmail.account_id !== teacher.account_id) {
+            return res.redirect('/add-teacher?error=อีเมลนี้ถูกใช้งานแล้ว');
+        }
 
         await db.PersonalData.update(
             {
@@ -458,31 +526,29 @@ app.post('/edit-teacher/:id', async (req, res) => {
                 last_name: lname,
                 telephone: phone
             },
-            { where: 
-                { 
-                    account_id: teacher.account_id 
-                } 
+            {
+                where: {
+                    account_id: teacher.account_id
+                }
             }
-
         );
 
         await db.Accounts.update(
-            { 
-                email: email 
+            {
+                email: email
             },
-            { 
-                where: 
-                { 
-                    account_id: teacher.account_id 
-                } 
+            {
+                where: {
+                    account_id: teacher.account_id
+                }
             }
         );
 
-        res.redirect(req.get('Referer'));
+        res.redirect('/add-teacher?success=แก้ไขข้อมูลสำเร็จ');
 
     } catch (err) {
         console.error(err);
-        res.status(500).send("แก้ไขไม่สำเร็จ");
+        res.redirect('/add-teacher?error=แก้ไขไม่สำเร็จ');
     }
 });
 
@@ -746,7 +812,7 @@ app.get('/add-studentsec', isLoggedIn, isAdmin, async (req, res) => {
 
         const students = await db.Students.findAll();
 
-        res.render('add-studentsec', {user, pd, reg, subjects, students});
+        res.render('add-studentsec', {user, pd, reg, subjects, students,error: req.query.error,     success: req.query.success  });
 
     } catch (err) {
         console.error(err);
@@ -754,7 +820,7 @@ app.get('/add-studentsec', isLoggedIn, isAdmin, async (req, res) => {
     }
 });
 
-app.post('/save-enrollment', async (req, res) => { // i have no idea wtf this is
+app.post('/save-enrollment', async (req, res) => {
   try {
 
     const subject_code = req.body.subject_code;
@@ -762,7 +828,7 @@ app.post('/save-enrollment', async (req, res) => { // i have no idea wtf this is
     let students = req.body.students;
 
     if (!students) {
-        return res.redirect('back');
+        return res.redirect('/add-studentsec?error=กรุณาเลือกนักเรียน'); // ✅ แก้
     }
 
     if (!Array.isArray(students)) {
@@ -770,14 +836,11 @@ app.post('/save-enrollment', async (req, res) => { // i have no idea wtf this is
     }
 
     const subject = await db.Subject.findOne({
-      where: 
-      { 
-        subject_code 
-    }
+      where: { subject_code }
     });
 
     if (!subject) {
-      return res.send("ไม่พบวิชา");
+      return res.redirect('/add-studentsec?error=ไม่พบวิชา'); // ✅ แก้
     }
 
     const subject_id = subject.subject_id;
@@ -790,14 +853,15 @@ app.post('/save-enrollment', async (req, res) => { // i have no idea wtf this is
     });
 
     for (let student_code of students) {
+
       const already = await db.Enrollments.findOne({
         where: { student_code, subject_code }
       });
 
       if (already && already.section != section) {
-        return res.send(
-          `นักเรียน ${student_code} ลงวิชานี้ไปแล้วใน Section ${already.section}`
-        );
+        return res.redirect(
+          `/add-studentsec?error=นักเรียน ${student_code} ลงวิชานี้ไปแล้วในกลุ่มเรียน ${already.section}`
+        ); // ✅ แก้
       }
 
       const allEnroll = await db.Enrollments.findAll({
@@ -828,10 +892,13 @@ app.post('/save-enrollment', async (req, res) => { // i have no idea wtf this is
                 newSch.start_time < oldSch.end_time &&
                 newSch.end_time > oldSch.start_time
               ) {
-                return res.send(
-                  `เวลาเรียนชนกับวิชา ${enroll.subject_code}`
-                );
+
+                return res.redirect(
+                  `/add-studentsec?error=เวลาเรียนชนกับวิชา ${enroll.subject_code}`
+                ); // ✅ แก้
+
               }
+
             }
           }
         }
@@ -844,11 +911,11 @@ app.post('/save-enrollment', async (req, res) => { // i have no idea wtf this is
       });
     }
 
-    res.redirect(req.get('Referer'));
+    res.redirect('/add-studentsec?success=เพิ่มนักเรียนเข้าวิชาสำเร็จ'); // ✅ แก้
 
   } catch (err) {
     console.error(err);
-    res.status(500).send(err.message);
+    res.redirect('/add-studentsec?error=เกิดข้อผิดพลาด'); // ✅ แก้
   }
 });
 
