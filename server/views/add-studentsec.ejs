@@ -90,8 +90,8 @@
                 <% if (sub.SubjectSchedules && sub.SubjectSchedules.length > 0) { %>
                     <% sub.SubjectSchedules.forEach(sch => { %>
                         <div style="margin-bottom:8px;">
-                            Section <%= sch.section %> : <%= sch.day_of_week %> <%= sch.start_time.substring(0,5) %> - <%= sch.end_time.substring(0,5) %>
-                            <button type="button" onclick="openPopup('<%= sub.subject_code %>', '<%= sch.section %>')">Add Student</button>
+                            กลุ่มเรียน <%= sch.section %> : <%= sch.day_of_week %> <%= sch.start_time.substring(0,5) %> - <%= sch.end_time.substring(0,5) %>
+                            <button type="button" onclick="openPopup('<%= sub.subject_code %>', '<%= sch.section %>')">เพิ่มนักเรียน</button>
                         </div>
                     <% }) %>
                 <% } else { %>
