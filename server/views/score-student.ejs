@@ -31,9 +31,9 @@
                         <% const totalScore=item.student_final_score + item.student_assignment_score + item.student_midterm_score; %>
                         <td><%= item.subject_code %></td>
                         <td><%= item.Subject.subject_name %></td>
-                        <td><%= item.student_assignment_score %></td>
-                        <td><%= item.student_midterm_score %></td>
-                        <td><%= item.student_final_score %></td>
+                        <td><%= item.student_assignment_score ?? '-' %></td>
+                        <td><%= item.student_midterm_score ?? '-' %></td>
+                        <td><%= item.student_final_score ?? '-' %></td>
                         <td><%= totalScore %></td>
                         <% if (totalScore >= 80) { %>
                             <td>4</td>
