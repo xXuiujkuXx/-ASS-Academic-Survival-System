@@ -1,0 +1,23 @@
+<div class="overlay" id="errorOverlay" style="display:none;">
+    <div class="box">
+        <button class="close-btn" onclick="closeError()">✕</button>
+        <h2>เกิดข้อผิดพลาด</h2>
+        <p><%= typeof error !== 'undefined' ? error : '' %></p>
+    </div>
+</div>
+
+<script>
+function openError(){
+    document.getElementById("errorOverlay").style.display = "flex";
+}
+
+function closeError(){
+    document.getElementById("errorOverlay").style.display = "none";
+}
+
+<% if (typeof error !== 'undefined' && error) { %>
+window.onload = function(){
+    openError();
+}
+<% } %>
+</script>
